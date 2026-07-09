@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "nodemon --watch src --exec ts-node src/index.ts",
     "build": "npx prisma generate",
-    "start": "npx prisma db push --accept-data-loss && ts-node src/index.ts",
-    "seed": "ts-node prisma/seed.ts && ts-node seed-all-messages.ts",
+    "start": "npx prisma db push --accept-data-loss && npx ts-node src/index.ts",
+    "seed": "npx ts-node prisma/seed.ts && npx ts-node seed-all-messages.ts",
     "test": "echo \"No test specified\" && exit 0"
   },
   "keywords": [],
@@ -28,7 +28,9 @@
     "multer": "^2.2.0",
     "pg": "^8.22.0",
     "prisma": "^7.8.0",
-    "zod": "^4.4.3"
+    "zod": "^4.4.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -39,8 +41,6 @@
     "@types/multer": "^2.2.0",
     "@types/node": "^20.19.43",
     "@types/pg": "^8.20.0",
-    "nodemon": "^3.1.14",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "nodemon": "^3.1.14"
   }
 }

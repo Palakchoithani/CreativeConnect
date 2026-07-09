@@ -9,5 +9,6 @@
     "strict": true,
     "skipLibCheck": true
   },
+  "include": ["src/**/*"],
   "exclude": ["prisma.config.ts", "prisma/seed.ts", "dist", "node_modules"]
 }

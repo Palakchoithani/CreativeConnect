@@ -7,6 +7,7 @@
     "packages/*"
   ],
   "scripts": {
+    "start": "npm run start --workspace=api",
     "dev": "npm run dev --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",

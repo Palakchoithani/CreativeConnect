@@ -41,8 +41,8 @@ export default function RootLayout({
       <body className="min-h-full flex bg-background text-foreground overflow-y-auto">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="light"
+          
           disableTransitionOnChange
         >
           <ErrorBoundary>

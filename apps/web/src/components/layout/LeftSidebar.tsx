@@ -1,22 +1,28 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { 
+import {
+  Search, usePathname } from 'next/navigation';
+import {
+  Search, motion } from 'framer-motion';
+import {
+  Search, 
   Home, Image as ImageIcon, Briefcase, 
   Users, Calendar, GraduationCap,
   MessageSquare, Bell, Bookmark, Settings, User, Globe, LayoutDashboard, LogOut
 } from 'lucide-react';
-import { ThemeToggle } from '@/components/ThemeToggle';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
+import {
+  Search, ThemeToggle } from '@/components/ThemeToggle';
+import {
+  Search, useAuth } from '@/contexts/AuthContext';
+import {
+  Search, Button } from '@/components/ui/button';
 
 const NAV_ITEMS = [
   { name: 'Home', path: '/', icon: Home },
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { name: 'Feed', path: '/feed', icon: ImageIcon },
-  { name: 'Discover', path: '/search', icon: Users },
+  { name: 'Search', path: '/search', icon: Search },
   { name: 'Community', path: '/community', icon: Globe },
   { name: 'Portfolio', path: '/portfolio', icon: ImageIcon },
   { name: 'Jobs', path: '/jobs', icon: Briefcase },

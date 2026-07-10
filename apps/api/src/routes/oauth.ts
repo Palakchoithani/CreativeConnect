@@ -14,7 +14,7 @@ const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET || 'placeholder-gi
 
 // Redirect to Google OAuth Consent Page
 router.get('/google', (req, res) => {
-  const redirectUri = `${req.protocol}://${req.get('host')}/api/auth/oauth/google/callback`;
+  const host = req.get('host'); const protocol = host?.includes('azurewebsites.net') ? 'https' : req.protocol; const redirectUri = `${protocol}://${host}/api/auth/oauth/google/callback`;
   const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(
     redirectUri
   )}&response_type=code&scope=profile%20email`;
@@ -27,7 +27,7 @@ router.get('/google/callback', async (req: any, res) => {
   if (!code) return res.redirect(`${FRONTEND_URL}/login?error=OAuth code missing`);
 
   try {
-    const redirectUri = `${req.protocol}://${req.get('host')}/api/auth/oauth/google/callback`;
+    const host = req.get('host'); const protocol = host?.includes('azurewebsites.net') ? 'https' : req.protocol; const redirectUri = `${protocol}://${host}/api/auth/oauth/google/callback`;
     
     // Simulate exchange with Google token endpoint (to keep it integration-ready without crashing)
     // If the client credentials are placeholders, we'll bypass external calls to allow testing

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --watch src --exec ts-node src/index.ts",
     "build": "npx prisma generate && npx tsc && cp -r src/generated dist/generated",
-    "start": "npx prisma db push --accept-data-loss && node dist/index.js",
+    "start": "node dist/index.js",
     "seed": "node prisma/seed.js && node seed-all-messages.js",
     "test": "echo \"No test specified\" && exit 0"
   },

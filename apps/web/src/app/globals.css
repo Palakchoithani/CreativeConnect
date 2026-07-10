@@ -45,75 +45,75 @@
 
 :root {
   --background: #FFFFFF;
-  --foreground: #09090B;
+  --foreground: #000000;
   --card: #FFFFFF;
-  --card-foreground: #09090B;
+  --card-foreground: #000000;
   --popover: #FFFFFF;
-  --popover-foreground: #09090B;
+  --popover-foreground: #000000;
   
-  --primary: #6D28D9;
+  --primary: #06b6d4;
   --primary-foreground: #FFFFFF;
   
   --secondary: #F3F4F6;
-  --secondary-foreground: #111827;
+  --secondary-foreground: #000000;
   
   --muted: #F3F4F6;
   --muted-foreground: #6B7280;
   
-  --accent: #E0E7FF;
-  --accent-foreground: #4338CA;
+  --accent: #cffafe;
+  --accent-foreground: #0891b2;
   
   --destructive: #EF4444;
   --border: #E5E7EB;
   --input: #E5E7EB;
-  --ring: #6D28D9;
+  --ring: #06b6d4;
   
   --radius: 1rem;
   
   --sidebar: #FFFFFF;
-  --sidebar-foreground: #09090B;
-  --sidebar-primary: #6D28D9;
+  --sidebar-foreground: #000000;
+  --sidebar-primary: #06b6d4;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F3F4F6;
-  --sidebar-accent-foreground: #6D28D9;
+  --sidebar-accent: #cffafe;
+  --sidebar-accent-foreground: #0891b2;
   --sidebar-border: #E5E7EB;
-  --sidebar-ring: #6D28D9;
+  --sidebar-ring: #06b6d4;
 }
 
 .dark {
-  /* Deep Space Dark Mode */
-  --background: #030014;
-  --foreground: #F8FAFC;
+  /* Dark Mode with Cyan */
+  --background: #000000;
+  --foreground: #FFFFFF;
   --card: rgba(15, 23, 42, 0.6);
-  --card-foreground: #F8FAFC;
+  --card-foreground: #FFFFFF;
   --popover: rgba(15, 23, 42, 0.8);
-  --popover-foreground: #F8FAFC;
+  --popover-foreground: #FFFFFF;
   
-  --primary: #A855F7;
-  --primary-foreground: #FFFFFF;
+  --primary: #22d3ee;
+  --primary-foreground: #000000;
   
   --secondary: rgba(30, 41, 59, 0.7);
-  --secondary-foreground: #F8FAFC;
+  --secondary-foreground: #FFFFFF;
   
   --muted: rgba(30, 41, 59, 0.5);
   --muted-foreground: #94A3B8;
   
-  --accent: rgba(139, 92, 246, 0.15);
-  --accent-foreground: #C084FC;
+  --accent: rgba(6, 182, 212, 0.15);
+  --accent-foreground: #22d3ee;
   
   --destructive: #EF4444;
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.1);
-  --ring: #A855F7;
+  --ring: #22d3ee;
   
   --sidebar: #020617;
-  --sidebar-foreground: #F8FAFC;
-  --sidebar-primary: #A855F7;
-  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #22d3ee;
+  --sidebar-primary-foreground: #000000;
   --sidebar-accent: rgba(30, 41, 59, 0.8);
-  --sidebar-accent-foreground: #C084FC;
+  --sidebar-accent-foreground: #22d3ee;
   --sidebar-border: rgba(255, 255, 255, 0.05);
-  --sidebar-ring: #A855F7;
+  --sidebar-ring: #22d3ee;
 }
 
 @layer base {
@@ -153,10 +153,10 @@
   }
   
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500;
   }
   
   .bg-gradient-premium {
-    @apply bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500;
+    @apply bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500;
   }
 }

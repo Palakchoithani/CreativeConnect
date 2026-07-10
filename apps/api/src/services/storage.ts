@@ -17,7 +17,16 @@ export const uploadFile = async (containerName: string, blobName: string, buffer
     blobHTTPHeaders: { blobContentType: mimeType }
   });
 
-  return blockBlobClient.url;
+  const rawUrl = blockBlobClient.url;
+  
+  // If Azure CDN is configured, rewrite the URL to use the global Edge Network
+  if (process.env.AZURE_CDN_URL) {
+    const urlObj = new URL(rawUrl);
+    // Replace the blob.core.windows.net hostname with the CDN hostname
+    return rawUrl.replace(urlObj.origin, process.env.AZURE_CDN_URL);
+  }
+
+  return rawUrl;
 };
 
 export const deleteFile = async (containerName: string, blobName: string) => {

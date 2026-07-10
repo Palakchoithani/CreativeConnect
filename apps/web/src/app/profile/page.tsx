@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { Heart, Eye, Briefcase, Camera, Edit3, Trash2, ExternalLink, MapPin, Globe } from 'lucide-react';
+import { ConnectionsDialog } from '@/components/profile/ConnectionsDialog';
 
 export default function ProfilePage() {
   const { token, user, logout, isAuthenticated, refreshUser } = useAuth();
@@ -21,6 +22,11 @@ export default function ProfilePage() {
   const [form, setForm] = useState({ bio: '', location: '', skills: '', website: '', instagram: '', twitter: '', linkedin: '' });
   const [saving, setSaving] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
+
+  // Dialog State
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState<'followers' | 'following'>('followers');
+  const [myFollowingIds, setMyFollowingIds] = useState<Set<string>>(new Set());
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -38,6 +44,17 @@ export default function ProfilePage() {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/profile/me`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
+      const connsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/connection`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (connsRes.ok) {
+        const data = await connsRes.json();
+        const followingSet = new Set<string>();
+        data.following.forEach((c: any) => followingSet.add(c.following.id));
+        setMyFollowingIds(followingSet);
+      }
+
       if (res.ok) {
         const data = await res.json();
         setProfile(data);
@@ -290,20 +307,23 @@ export default function ProfilePage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          { label: 'Projects', value: portfolios.length, icon: Briefcase, color: 'text-violet-400 bg-violet-500/10' },
-          { label: 'Total Views', value: totalViews, icon: Eye, color: 'text-sky-400 bg-sky-500/10' },
-          { label: 'Total Likes', value: totalLikes, icon: Heart, color: 'text-pink-400 bg-pink-500/10' },
-        ].map(stat => (
-          <div key={stat.label} className="bg-card rounded-2xl border border-border p-6 flex items-center gap-4">
-            <div className={`p-3 rounded-xl ${stat.color}`}><stat.icon className="w-5 h-5" /></div>
-            <div>
-              <p className="text-2xl font-extrabold text-foreground">{stat.value}</p>
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-            </div>
-          </div>
-        ))}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-card rounded-2xl border border-border p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-secondary/50 transition" onClick={() => { setDialogType('followers'); setDialogOpen(true); }}>
+          <p className="text-2xl font-extrabold text-foreground">{profile.user._count?.followers || 0}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">Followers</p>
+        </div>
+        <div className="bg-card rounded-2xl border border-border p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-secondary/50 transition" onClick={() => { setDialogType('following'); setDialogOpen(true); }}>
+          <p className="text-2xl font-extrabold text-foreground">{profile.user._count?.following || 0}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">Following</p>
+        </div>
+        <div className="bg-card rounded-2xl border border-border p-4 flex flex-col items-center justify-center">
+          <p className="text-2xl font-extrabold text-foreground">{portfolios.length}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">Projects</p>
+        </div>
+        <div className="bg-card rounded-2xl border border-border p-4 flex flex-col items-center justify-center">
+          <p className="text-2xl font-extrabold text-foreground">{totalViews}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">Total Views</p>
+        </div>
       </div>
 
       {/* Portfolio Grid */}
@@ -367,6 +387,14 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
+
+      <ConnectionsDialog
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        userId={user?.id || ''}
+        type={dialogType}
+        currentFollowingIds={myFollowingIds}
+      />
     </motion.div>
   );
 }

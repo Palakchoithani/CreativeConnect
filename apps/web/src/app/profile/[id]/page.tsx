@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
 import { Button } from '@/components/ui/button';
 import { Heart, Eye, UserPlus, UserMinus, MessageSquare, MapPin, Globe, Briefcase } from 'lucide-react';
+import { ConnectionsDialog } from '@/components/profile/ConnectionsDialog';
 
 export default function PublicProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -19,6 +20,11 @@ export default function PublicProfilePage({ params }: { params: Promise<{ id: st
   const [loading, setLoading] = useState(true);
   const [followLoading, setFollowLoading] = useState(false);
 
+  // Dialog State
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState<'followers' | 'following'>('followers');
+  const [myFollowingIds, setMyFollowingIds] = useState<Set<string>>(new Set());
+
   const isMe = currentUser?.id === id;
 
   useEffect(() => {
@@ -28,13 +34,34 @@ export default function PublicProfilePage({ params }: { params: Promise<{ id: st
   const fetchProfile = async () => {
     setLoading(true);
     try {
-      const [userRes, portRes] = await Promise.all([
+      const requests = [
         fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/users/${id}`),
         fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/users/${id}/portfolio`)
-      ]);
+      ];
+
+      // If authenticated, also fetch the current user's connections so we know who they follow in the dialog
+      if (isAuthenticated && token) {
+        requests.push(
+          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/connection`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+        );
+      }
+
+      const responses = await Promise.all(requests);
+      const userRes = responses[0];
+      const portRes = responses[1];
+      const myConnsRes = responses[2];
 
       if (userRes.ok) setProfileUser(await userRes.json());
       if (portRes.ok) setPortfolios(await portRes.json());
+      
+      if (myConnsRes?.ok) {
+        const data = await myConnsRes.json();
+        const followingSet = new Set<string>();
+        data.following.forEach((c: any) => followingSet.add(c.following.id));
+        setMyFollowingIds(followingSet);
+      }
 
       // Check follow status if logged in
       if (isAuthenticated && token && currentUser?.id !== id) {
@@ -191,17 +218,22 @@ export default function PublicProfilePage({ params }: { params: Promise<{ id: st
 
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-border">
-          {[
-            { label: 'Followers', value: profileUser._count?.followers || 0 },
-            { label: 'Following', value: profileUser._count?.following || 0 },
-            { label: 'Projects', value: portfolios.length },
-            { label: 'Portfolio Views', value: totalViews },
-          ].map(stat => (
-            <div key={stat.label} className="text-center">
-              <p className="text-2xl font-extrabold text-foreground">{stat.value}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
-            </div>
-          ))}
+          <div className="text-center cursor-pointer hover:bg-secondary/50 rounded-xl p-2 transition" onClick={() => { setDialogType('followers'); setDialogOpen(true); }}>
+            <p className="text-2xl font-extrabold text-foreground">{profileUser._count?.followers || 0}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Followers</p>
+          </div>
+          <div className="text-center cursor-pointer hover:bg-secondary/50 rounded-xl p-2 transition" onClick={() => { setDialogType('following'); setDialogOpen(true); }}>
+            <p className="text-2xl font-extrabold text-foreground">{profileUser._count?.following || 0}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Following</p>
+          </div>
+          <div className="text-center p-2">
+            <p className="text-2xl font-extrabold text-foreground">{portfolios.length}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Projects</p>
+          </div>
+          <div className="text-center p-2">
+            <p className="text-2xl font-extrabold text-foreground">{totalViews}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Portfolio Views</p>
+          </div>
         </div>
 
         {/* Skills */}
@@ -253,6 +285,14 @@ export default function PublicProfilePage({ params }: { params: Promise<{ id: st
           </div>
         )}
       </div>
+
+      <ConnectionsDialog
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        userId={id}
+        type={dialogType}
+        currentFollowingIds={myFollowingIds}
+      />
     </motion.div>
   );
 }

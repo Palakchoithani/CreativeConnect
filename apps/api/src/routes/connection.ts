@@ -57,6 +57,28 @@ router.get('/', authenticate, async (req: any, res) => {
   }
 });
 
+// Get connections of ANY specific user
+router.get('/user/:userId/list', async (req: any, res) => {
+  try {
+    const { userId } = req.params;
+    
+    const [following, followers] = await Promise.all([
+      prisma.connection.findMany({
+        where: { followerId: userId, status: 'ACCEPTED' },
+        include: { following: { select: { id: true, name: true, profile: { select: { avatarUrl: true, bio: true } } } } }
+      }),
+      prisma.connection.findMany({
+        where: { followingId: userId, status: 'ACCEPTED' },
+        include: { follower: { select: { id: true, name: true, profile: { select: { avatarUrl: true, bio: true } } } } }
+      })
+    ]);
+
+    res.json({ following, followers });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Check follow status between current user and another user
 router.get('/status/:targetId', authenticate, async (req: any, res) => {
   try {

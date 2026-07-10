@@ -31,7 +31,7 @@ router.post('/:followingId', authenticate, async (req: any, res) => {
 
     res.status(201).json({ following: true, connection });
   } catch (error: any) {
-    res.status(500).json({ error: 'Internal server error' });
+    console.error(error); res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -53,7 +53,7 @@ router.get('/', authenticate, async (req: any, res) => {
 
     res.json({ following, followers });
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    console.error(error); res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -64,18 +64,18 @@ router.get('/user/:userId/list', async (req: any, res) => {
     
     const [following, followers] = await Promise.all([
       prisma.connection.findMany({
-        where: { followerId: userId, status: 'ACCEPTED' },
+        where: { followerId: userId },
         include: { following: { select: { id: true, name: true, profile: { select: { avatarUrl: true, bio: true } } } } }
       }),
       prisma.connection.findMany({
-        where: { followingId: userId, status: 'ACCEPTED' },
+        where: { followingId: userId },
         include: { follower: { select: { id: true, name: true, profile: { select: { avatarUrl: true, bio: true } } } } }
       })
     ]);
 
     res.json({ following, followers });
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    console.error(error); res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -89,7 +89,7 @@ router.get('/status/:targetId', authenticate, async (req: any, res) => {
     });
     res.json({ following: !!connection });
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    console.error(error); res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -102,7 +102,7 @@ router.put('/:connectionId/accept', authenticate, async (req: any, res) => {
     });
     res.json(connection);
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    console.error(error); res.status(500).json({ error: 'Internal server error' });
   }
 });
 

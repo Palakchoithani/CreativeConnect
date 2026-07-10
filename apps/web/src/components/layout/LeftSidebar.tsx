@@ -1,22 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  Search, usePathname } from 'next/navigation';
-import {
-  Search, motion } from 'framer-motion';
-import {
-  Search, 
+import { usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { 
+  Search,
   Home, Image as ImageIcon, Briefcase, 
   Users, Calendar, GraduationCap,
   MessageSquare, Bell, Bookmark, Settings, User, Globe, LayoutDashboard, LogOut
 } from 'lucide-react';
-import {
-  Search, ThemeToggle } from '@/components/ThemeToggle';
-import {
-  Search, useAuth } from '@/contexts/AuthContext';
-import {
-  Search, Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
 
 const NAV_ITEMS = [
   { name: 'Home', path: '/', icon: Home },
